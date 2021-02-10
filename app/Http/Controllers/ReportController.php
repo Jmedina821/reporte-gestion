@@ -22,18 +22,36 @@ class ReportController extends Controller
      */
     public function index($id,$type,$format)
     {
-        $report = new Report();
          ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
+        $report = new Report();
+         
+        switch ($type) {
+          case 'activity':
           $pdf = app('dompdf.wrapper');
-            $customPaper = array(15, -20, 600, 227);
-            $data=$report->dataactivity($id);
-            //dd($data);
-
-            //dd(DB::select("select *  FROM activity "));
-  //$view = \View::make('notacredito.pdf', compact('cabecera', 'detalles', 'numeroLtras'))->render();
+          $customPaper = array(15, -20, 600, 227);
+          $data=$report->dataactivity($id);
           $pdf = \PDF::loadView('activity_pdf' ,compact('data'));
-        return $pdf->download('activity_pdf.pdf');
+
+          return $pdf->download('activity.pdf');
+          break;
+          case 'project':
+          $pdf = app('dompdf.wrapper');
+          $customPaper = array(15, -20, 600, 227);
+          $data=$report->dataproject($id);
+        // dd($data[0]->project_id);
+          $activity=$report->dataaallctivityproject($data[0]->project_id);
+          //dd($activity);
+          $pdf = \PDF::loadView('project_pdf' ,compact('data','activity'));
+          return $pdf->download('project.pdf');
+
+          break;
+
+          default:
+              
+          break;
+        }
+       
             //$pdf->loadView('report.activity_pdf', compact('data'))->setPaper($customPaper, 'landscape');
             //return $pdf->download('formato.pdf');
     }
