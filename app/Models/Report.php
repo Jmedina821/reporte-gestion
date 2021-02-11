@@ -11,15 +11,17 @@ class Report extends Model
   //protected $connection= 'pgsql';
   public function dataaallctivityproject($project)
   {
+    //dd($project);
     $id = "'" . $project . "'";
-    //dd(' SELECT * FROM activity as act where act."projectId"='.$id);
-    $result = DB::select(' SELECT * FROM activities as act where act."project_id"=' . $id);
+    //dd(' SELECT * FROM activity as act where act.project_id='.$id);
+    $result = DB::select("SELECT * FROM activities as act where act.project_id=" . $id);
     return $result;
   }
   public function dataactivity($parameter)
   {
     $id = $parameter == 'none' ? "'6f87f4b2-6af4-4d47-844f-7d60ce693be2'" : "'" . $parameter . "'";
-    $result = DB::select('
+	//dd($id);   
+ $result = DB::select('
  SELECT act.id as act_id, 
 act.name as act_name, 
 act.description as act_description, 
@@ -51,22 +53,22 @@ act."parroquia_id" as act_parroquiaId,
   public function dataproject($parameter)
   {
     $id = $parameter == 'none' ? "'b56bbb76-0d61-4ccd-a030-eb9aa648c424'" : "'" . $parameter . "'";
-    $result = DB::select('SELECT 
-      proj.id as project_id,
-  proj.name as project_name,
-  proj.description as proj_description,
-  status.name as status_name,
-  mea.name as measurement_name,
-  act.name as activity_name,
-  act.address as activity_address,
-  prog.name as prog_name,
-  act.* as _act
+   
+    $result = DB::select("SELECT 
+proj.id as project_id_proj,
+proj.name as project_name_proj,
+proj.description as proj_description_proj,
+prog.name as prog_name_prog,
+status.name as name_status,
+mea.name as measurement_name_mea,
+act.* as _act
 from projects AS proj 
-LEFT JOIN programs as prog ON prog.id = proj."program_id"
-LEFT JOIN project_statuses as status on status.id = proj."project_status_id"
-LEFT JOIN measurements as mea on mea.id = proj."measurement_id"
-LEFT JOIN activities as act on act."project_id" = proj.id
- where proj.id=' . $id . ' limit 1');
+LEFT JOIN programs as prog ON prog.id = proj.program_id
+LEFT JOIN project_statuses as status on status.id = proj.project_status_id
+LEFT JOIN measurements as mea on mea.id = proj.measurement_id
+LEFT JOIN activities as act on act.project_id = proj.id
+ where proj.id=".$id." limit 1");
+    //dd($result);
     return $result;
   }
 }
